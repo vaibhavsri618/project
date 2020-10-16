@@ -1,8 +1,131 @@
 <?php
+
+require 'connection.php';
+require 'header.php'?>
+
+<?php
+require 'asider.php'
+?>
+
+
+
+
+
+
+<?php
+
+$error=array();
+if (isset($_POST['submit'])) {
+    $name=isset($_POST['name'])?$_POST['name']:'';
+
+    $price=isset($_POST['price'])?$_POST['price']:'';
+    $image=isset($_POST['image'])?$_POST['image']:'';
+    $select=isset($_POST['dropdown'])?$_POST['dropdown']:'';
+    $textfield=isset($_POST['textfield'])?$_POST['textfield']:'';
+    $short=isset($_POST['short'])?$_POST['short']:'';
+
+
+    if ($name=="" || $price=="" || $textfield=="" || $short=="" || !empty($_POST['image'])) {
+        $error[]=array("id"=>'form','msg'=>"Field cant be empty");
+    }
+    if ($select=="Select") {
+        $error[]=array("id"=>'form','msg'=>"Please select Catelogy");
+    }
+    
+
+
    
-require 'header.php' ?>
-<?php 
-   require 'asider.php'?>
+    $arr=array();
+            
+
+
+    if (!empty($_POST['check_list'])) {
+        foreach ($_POST['check_list'] as $selected) {
+            //echo "<p>".$selected ."</p>";
+            array_push($arr, $selected);
+        }
+        $jsonarr=json_encode($arr);
+        //print_r($jsonarr);
+        
+    } else {
+        $error[]=array("id"=>'form','msg'=>"Field cant be empty");
+    }
+
+    $filename = $_FILES["image"]["name"]; 
+    $tempname = $_FILES["image"]["tmp_name"];     
+        $folder = "images/".$filename; 
+    
+    if (count($error)==0) {
+
+        $sql = "INSERT INTO products 
+        (name, price, image, short_description, long_description, category_id)
+        VALUES ('".$name."', '".$price."', '".$filename."', 
+    '".$short."',  '".$textfield."', '".$select."')";
+
+
+
+        if ($conn->query($sql) === true) {
+            echo "<p style='margin-left:18%;color:green'><b>Product inserted successfully<b></p> <br>";
+            if (move_uploaded_file($tempname, $folder)) { 
+            } else { 
+                echo "Failed to upload image"; 
+            } 
+         
+
+        } else {
+
+        } 
+    }   
+    if (count($error)>0) {
+        foreach ($error as $err) {
+            echo "<script>alert('".$err['msg']."')</script>";
+
+        }
+    }
+
+    if (count($error)==0) {   
+         $sql3 = "SELECT product_id FROM products WHERE name='".$name."'";
+         $result3 = $conn->query($sql3);
+
+        if ($result3->num_rows > 0) {
+            while ($row2 = $result3->fetch_assoc()) {
+                  $pid=$row2['product_id'];
+            }
+        } else {
+            echo "0 results";
+        }
+
+         $sql5 = "INSERT INTO tags_products (product_id, tag_id)
+VALUES ('".$pid."', '".$jsonarr."')";
+
+        if ($conn->query($sql5) === true) {
+            echo "New record created successfully";
+        } else {
+            echo "Error: " . $sql5 . "<br>" . $conn->error;
+        }
+
+
+
+    
+
+
+    } 
+
+
+    
+}
+
+
+
+
+
+
+
+?>
+
+
+
+
 <div id="main-content">
    <!-- Main Content Section with everything -->
    <noscript>
@@ -59,10 +182,10 @@ require 'header.php' ?>
          <h3>Content box</h3>
          <ul class="content-box-tabs">
             <li><a href="#tab1" class="default-tab">
-               Table</a>
+               Manage</a>
             </li>
             <!-- href must be unique and match the id of target div -->
-            <li><a href="#tab2">Forms</a></li>
+            <li><a href="#tab2">Add</a></li>
          </ul>
          <div class="clear"></div>
       </div>
@@ -255,7 +378,8 @@ alt="Edit" /></a>
          </div>
          <!-- End #tab1 -->
          <div class="tab-content" id="tab2">
-         <form action="addprod.php" method="post" enctype="multipart/form-data">
+     
+         <form action="#" method="post" enctype="multipart/form-data">
                <fieldset>
                   <!-- Set class to "column-left" or "column-right"
                      on fieldsets to divide the form into columns -->
@@ -278,27 +402,46 @@ alt="Edit" /></a>
                         name="image" />
                   </p>
                   <p>
+                  <?php
+                    $sql = "SELECT * FROM categories";
+                    $result = $conn->query($sql);
+                    
+                   ?>
                      <label>Category</label>              
                      <select name="dropdown" class="small-input">
                         <option value="select">Select</option>
-                        <option value="Man">Man</option>
-                        <option value="Women">Women</option>
-                        <option value="Kids">kids</option>
-                        <option value="Electronic">Electronic</option>
-                        <option value="Sports">Sports</option>
-                     
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='".$row['id']."'>".$row['name']."</option>";
+                            }
+                        } else {
+                            echo "0 results";
+                        }
+                         
+                        ?>
+
+                        
                      </select>
                   </p>
                   
                   <p>
                      <label>Tags</label>
-                     <input type="checkbox" name="check_list[]" value="fashion" />Fashion 
-                     <input type="checkbox" name="check_list[]" value="ecommerce" />Ecommerce
-                     <input type="checkbox" name="check_list[]" value="shop" />Shop
-                     <input type="checkbox" name="check_list[]" value="handbag" />Hand bag
-                     <input type="checkbox" name="check_list[]" value="laptop" />Laptop
-                     <input type="checkbox" name="check_list[]" value="headphone" />Headphone
-                  
+
+                     <?php
+                        $sql1 = "SELECT * FROM tags";
+                        $result1 = $conn->query($sql1);
+                        
+                        if ($result1->num_rows > 0) {
+                            while ($row1 = $result1->fetch_assoc()) {
+                                echo "<input type='checkbox' name='check_list[]' value='".$row1['id']."' />".$row1['name']."";
+                            }
+                        } else {
+                            echo "0 results";
+                        }
+                        $conn->close();
+                        ?>
+                    
                   
                   </p>
 
@@ -308,7 +451,6 @@ alt="Edit" /></a>
                         name="short" />
                   </p>
                  
-
 
                   <p>
                      <label>Description</label>
@@ -322,7 +464,9 @@ alt="Edit" /></a>
                <div class="clear"></div>
                <!-- End .clear -->
             </form>
-         </div>
+         
+     
+     </div>
          <!-- End #tab2 -->        
       </div>
       <!-- End .content-box-content -->

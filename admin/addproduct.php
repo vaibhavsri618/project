@@ -6,6 +6,128 @@ require 'header.php'?>
 <?php
 require 'asider.php'
 ?>
+
+
+
+
+
+
+<?php
+
+$error=array();
+if (isset($_POST['submit'])) {
+    $name=isset($_POST['name'])?$_POST['name']:'';
+
+    $price=isset($_POST['price'])?$_POST['price']:'';
+    $image=isset($_POST['image'])?$_POST['image']:'';
+    $select=isset($_POST['dropdown'])?$_POST['dropdown']:'';
+    $textfield=isset($_POST['textfield'])?$_POST['textfield']:'';
+    $short=isset($_POST['short'])?$_POST['short']:'';
+
+
+    if ($name=="" || $price=="" || $textfield=="" || $short=="" || !empty($_POST['image'])) {
+        $error[]=array("id"=>'form','msg'=>"Field cant be empty");
+    }
+    if ($select=="Select") {
+        $error[]=array("id"=>'form','msg'=>"Please select Catelogy");
+    }
+    
+
+
+   
+    $arr=array();
+            
+
+
+    if (!empty($_POST['check_list'])) {
+        foreach ($_POST['check_list'] as $selected) {
+            //echo "<p>".$selected ."</p>";
+            array_push($arr, $selected);
+        }
+        $jsonarr=json_encode($arr);
+        //print_r($jsonarr);
+        
+    } else {
+        $error[]=array("id"=>'form','msg'=>"Field cant be empty");
+    }
+
+    $filename = $_FILES["image"]["name"]; 
+    $tempname = $_FILES["image"]["tmp_name"];     
+        $folder = "images/".$filename; 
+    
+    if (count($error)==0) {
+
+        $sql = "INSERT INTO products 
+        (name, price, image, short_description, long_description, category_id)
+        VALUES ('".$name."', '".$price."', '".$filename."', 
+    '".$short."',  '".$textfield."', '".$select."')";
+
+
+
+        if ($conn->query($sql) === true) {
+            echo "<p style='margin-left:18%;color:green'><b>Product inserted successfully<b></p> <br>";
+            if (move_uploaded_file($tempname, $folder)) { 
+                 } else { 
+                echo "Failed to upload image"; 
+            } 
+         
+
+        } else {
+
+        } 
+    }   
+    if (count($error)>0) {
+        foreach ($error as $err) {
+            echo "<script>alert('".$err['msg']."')</script>";
+
+        }
+    }
+
+    if (count($error)==0) {   
+         $sql3 = "SELECT product_id FROM products WHERE name='".$name."'";
+         $result3 = $conn->query($sql3);
+
+        if ($result3->num_rows > 0) {
+            while ($row2 = $result3->fetch_assoc()) {
+                  $pid=$row2['product_id'];
+            }
+        } else {
+            echo "0 results";
+        }
+
+         $sql5 = "INSERT INTO tags_products (product_id, tag_id)
+VALUES ('".$pid."', '".$jsonarr."')";
+
+        if ($conn->query($sql5) === true) {
+            echo "New record created successfully";
+        } else {
+            echo "Error: " . $sql5 . "<br>" . $conn->error;
+        }
+
+
+
+    
+
+
+    } 
+
+
+    
+}
+
+
+
+
+
+
+
+?>
+
+
+
+
+
+
 <div id="main-content">
 
 <h2>Welcome John</h2>
@@ -18,23 +140,17 @@ require 'asider.php'
          <h3>Content box</h3>
          <ul class="content-box-tabs">
             <li><a href="#tab1" >
-               Table</a>
+               Manage</a>
             </li>
             <!-- href must be unique and match the id of target div -->
-            <li><a href="#tab2" class="default-tab">Forms</a></li>
+            <li><a href="#tab2" class="default-tab">Add</a></li>
          </ul>
          <div class="clear"></div>
       </div>
       <!-- End .content-box-header -->
       <div class="content-box-content">
       <div class="tab-content default-tab" id="tab2">
-      <div class="notification attention png_bg">
-
-      <?php 
-        echo $_GET['id1'];
-        ?>
-      </div>
-            <form action="addprod.php" method="post" enctype="multipart/form-data">
+            <form action="#" method="post" enctype="multipart/form-data">
                <fieldset>
                   <!-- Set class to "column-left" or "column-right"
                      on fieldsets to divide the form into columns -->
