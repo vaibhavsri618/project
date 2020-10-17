@@ -10,6 +10,8 @@ if (isset($_POST['submit'])) {
     $select=isset($_POST['dropdown'])?$_POST['dropdown']:'';
     $textfield=isset($_POST['textfield'])?$_POST['textfield']:'';
     $short=isset($_POST['short'])?$_POST['short']:'';
+    
+
 
 
     if ($name=="" || $price=="" || $textfield=="" || $short=="" || !empty($_POST['image'])) {
@@ -62,7 +64,8 @@ if (isset($_POST['submit'])) {
 
         } else {
 
-        } 
+        }
+      
     }   
     if (count($error)>0) {
         foreach ($error as $err) {
@@ -92,6 +95,17 @@ VALUES ('".$pid."', '".$jsonarr."')";
     } else {
         echo "Error: " . $sql5 . "<br>" . $conn->error;
     }
+
+      
+    $sql22 = "INSERT INTO colors (product_id, color, quantity)
+    VALUES ('".$pid."', '".$color."', '1')";
+    
+    if ($conn->query($sql22) === true) {
+      echo "New record created successfully";
+    } else {
+      echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+    
 
 
 

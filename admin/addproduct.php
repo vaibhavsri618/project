@@ -23,6 +23,8 @@ if (isset($_POST['submit'])) {
     $select=isset($_POST['dropdown'])?$_POST['dropdown']:'';
     $textfield=isset($_POST['textfield'])?$_POST['textfield']:'';
     $short=isset($_POST['short'])?$_POST['short']:'';
+    $color=isset($_POST['color'])?$_POST['color']:'';
+  
 
 
     if ($name=="" || $price=="" || $textfield=="" || $short=="" || !empty($_POST['image'])) {
@@ -103,6 +105,17 @@ VALUES ('".$pid."', '".$jsonarr."')";
         } else {
             echo "Error: " . $sql5 . "<br>" . $conn->error;
         }
+        $sql22 = "INSERT INTO colors (product_id, color, quantity)
+    VALUES ('".$pid."', '".$color."', '1')";
+    
+    if ($conn->query($sql22) === true) {
+      echo "New record created successfully";
+    } else {
+      echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+    
+
+
 
 
 
@@ -172,6 +185,15 @@ VALUES ('".$pid."', '".$jsonarr."')";
                      <input class="text-input small-input" type="file" id="small-input"
                         name="image" />
                   </p>
+
+                  <p>
+                     <label>Color</label>
+                     <input class="text-input small-input" type="color" id="small-input"
+                        name="color" value="#ADD8E6" />
+                  </p>
+                  
+
+
                   <p>
                   <?php
                     $sql = "SELECT * FROM categories";

@@ -425,42 +425,51 @@ session_start();
             <div class="aa-product-catg-body">
               <ul class="aa-product-catg">
                 <!-- start single product item -->
-                    <?php
-                      $sql = "SELECT * FROM products LIMIT {$offset},{$limit}";
-                      $result = $conn->query($sql);
-                      
-                    if ($result->num_rows > 0) {
-                        // output data of each row
-                        while ($row = $result->fetch_assoc()) {
-                         
-                            echo "<li>";
-                            echo "<figure>";
-                            
-                            echo '<a class="aa-product-img" href="#"><img src="admin/images/'.$row['image'].'" alt="polo shirt img" style="width: 250px;height: 300px;"></a>';
-                            echo '<a class="aa-add-card-btn"href="cart.php?cartid='.$row['product_id'].'"><span class="fa fa-shopping-cart"></span>Add To Cart</a>';
-                            echo '<figcaption>';
-                            echo '<h4 class="aa-product-title"><a href="#">'.$row['name'].'</a></h4>';
-                            echo '<span class="aa-product-price">&#8377;'.$row['price'].'</span><span class="aa-product-price"><del>$65.50</del></span>';
-                            echo '<p class="aa-product-descrip">"'.$row["long_description"].'"</p>';
-                            echo '</figcaption>';
-                            echo '</figure>';                         
-                            echo '<div class="aa-product-hvr-content">';
-                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>';
-                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>';
-                            echo '<a href="pro.php?mid='.$row["product_id"].'" class="quickview" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal"><span class="fa fa-search"></span></a>';                            
-                            echo '</div>';
-                            echo '<span class="aa-badge aa-sale" href="#">SALE!</span>';
-                            echo '</li>';
-                     
-                        
-                        
-                        
-                        }
-                    } else {
-                        echo "0 results";
-                    }
-                    ?>
+                <?php
+                
+                $color="#".$_GET['color'];
+                
+                $sql45="SELECT * from colors";
+                                    $result45=$conn->query($sql45);
+                                    if($result45->num_rows>0) {
+                                        while($row45=$result45->fetch_assoc()) {
+                                            if($row45['color']==$color) {
+                                                $sql46="SELECT * from products";
+                                                $result46=$conn->query($sql46);
+                                                if($result46->num_rows>0) {
+                                                    while($row46=$result46->fetch_assoc()) {
+                                                        if($row46['product_id']==$row45['product_id']) {
+                                                            
+                                                            echo "<li>";
+                                                            echo "<figure>";
+                                                            
+                                                            echo '<a class="aa-product-img" href="#"><img src="admin/images/'.$row46['image'].'" alt="polo shirt img" style="width: 250px;height: 300px;"></a>';
+                                                            echo '<a class="aa-add-card-btn"href="cart.php?cartid='.$row46['product_id'].'"><span class="fa fa-shopping-cart"></span>Add To Cart</a>';
+                                                            echo '<figcaption>';
+                                                            echo '<h4 class="aa-product-title"><a href="#">'.$row46['name'].'</a></h4>';
+                                                            echo '<span class="aa-product-price">&#8377;'.$row46['price'].'</span><span class="aa-product-price"><del>$65.50</del></span>';
+                                                            echo '<p class="aa-product-descrip">"'.$row46["long_description"].'"</p>';
+                                                            echo '</figcaption>';
+                                                            echo '</figure>';                         
+                                                            echo '<div class="aa-product-hvr-content">';
+                                                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>';
+                                                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>';
+                                                            echo '<a href="pro.php?mid='.$row46["product_id"].'" class="quickview" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal"><span class="fa fa-search"></span></a>';                            
+                                                            echo '</div>';
+                                                            echo '<span class="aa-badge aa-sale" href="#">SALE!</span>';
+                                                            echo '</li>';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
                     
+                
+                
+                ?>
+              
                  </ul>
               <!-- quick view modal -->                  
               <div class="modal fade" id="quick-view-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
