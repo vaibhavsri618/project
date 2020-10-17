@@ -694,19 +694,28 @@ if (isset($_GET['mid'])) {
             <div class="aa-sidebar-widget">
               <h3>Shop By Color</h3>
               <div class="aa-color-tag">
-                <a class="aa-color-green" href="#"></a>
-                <a class="aa-color-yellow" href="#"></a>
-                <a class="aa-color-pink" href="#"></a>
-                <a class="aa-color-purple" href="#"></a>
-                <a class="aa-color-blue" href="#"></a>
-                <a class="aa-color-orange" href="#"></a>
-                <a class="aa-color-gray" href="#"></a>
-                <a class="aa-color-black" href="#"></a>
-                <a class="aa-color-white" href="#"></a>
-                <a class="aa-color-cyan" href="#"></a>
-                <a class="aa-color-olive" href="#"></a>
-                <a class="aa-color-orchid" href="#"></a>
-              </div>                            
+                 <?php
+                    
+                    
+
+                    $sql20="SELECT * from colors";
+                    $result20=$conn->query($sql20);
+                    if ($result20->num_rows>0) {
+                      while ($row20 = $result20->fetch_assoc()) {
+                        
+                        $string = $row20['color'];
+                        $str = ltrim($string, '#');
+                         echo '<a href="productcolorfilter.php?color='.$str.'" style="display: inline-block;
+                         height: 20px;margin-bottom: 10px;
+                         margin-right: 10px;width: 30px;
+                         background-color: '.$row20['color'].';"></a>';
+                         
+                       }
+                     }
+                    
+
+                ?>
+             </div>                            
             </div>
             <!-- single sidebar -->
             <div class="aa-sidebar-widget">
