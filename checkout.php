@@ -1,3 +1,29 @@
+<?php
+require 'admin/connection.php';
+
+session_start();
+$json=json_encode($_SESSION['cart1']);
+
+$mydate=getdate(date("U"));
+$date="$mydate[weekday], $mydate[month] $mydate[mday], $mydate[year]";
+if (isset($_GET['amount'])) {
+  $amount=$_GET['amount'];
+  $sql24 = "INSERT INTO orders (cartdata, total, status,datetime)
+VALUES ('".$json."', '".$amount."', 'pending' ,'".$date."')";
+
+if ($conn->query($sql24) === TRUE) {
+  echo "New record created successfully";
+} else {
+  echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>

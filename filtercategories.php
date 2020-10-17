@@ -1,5 +1,6 @@
 <?php 
 require 'admin/connection.php';
+session_start();
 
 $limit=10;
 if (isset($_GET['pageid'])) {
@@ -154,36 +155,46 @@ if (isset($_GET['cid'])) {
               </div>
               <!-- / logo  -->
                <!-- cart box -->
-              <div class="aa-cartbox">
+               <div class="aa-cartbox">
                 <a class="aa-cart-link" href="#">
                   <span class="fa fa-shopping-basket"></span>
                   <span class="aa-cart-title">SHOPPING CART</span>
-                  <span class="aa-cart-notify">2</span>
+                  <span class="aa-cart-notify"><?php echo count($_SESSION["cart1"])  ?></span>
                 </a>
                 <div class="aa-cartbox-summary">
-                  <ul>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-2.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-1.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>                    
+                  
+                  <?php
+                    $html="";
+                    $sum=0;
+                    $html='<ul>';
+                    foreach($_SESSION['cart1'] as $value) {
+                      $html.='<li>';
+                      $html.='<a class="aa-cartbox-img" href="#"><img src="admin/images/'.$value["image"].'" alt="img"></a>';
+                      $html.='<div class="aa-cartbox-info">';
+
+                      $html.='<h4><a href="#">'.$value['name'].'</a></h4>';
+                      $html.='<p>'.$value['quantity']*$value['price'].'</p>';
+                      $html.='</div>';
+                      $html.=' <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
+                      ';
+                      $a=$value["price"]*$value["quantity"];
+            
+                      $sum+=$a;
+
+                      $html.='</li>';
+                      
+                      
+                      
+                    } 
+                    echo $html;
+
+                    ?>
                     <li>
                       <span class="aa-cartbox-total-title">
                         Total
                       </span>
                       <span class="aa-cartbox-total-price">
-                        $500
+                        <?php echo $sum ?>
                       </span>
                     </li>
                   </ul>
@@ -602,16 +613,30 @@ if (isset($_GET['cid'])) {
                </div>
             <!-- single sidebar -->
             <div class="aa-sidebar-widget">
-              <h3>Tags</h3>
-              <div class="tag-cloud">
-                <a href="#">Fashion</a>
-                <a href="#">Ecommerce</a>
-                <a href="#">Shop</a>
-                <a href="#">Hand Bag</a>
-                <a href="#">Laptop</a>
-                <a href="#">Head Phone</a>
-                <a href="#">Pen Drive</a>
-              </div>
+            <h3>Tags</h3>
+              <?php
+                $sql3="SELECT * from tags";
+                $result3=$conn->query($sql3);
+                
+                if ($result3->num_rows > 0) {
+                    echo '<div class="tag-cloud">';
+             
+                    while ($row3 = $result3->fetch_assoc()) {
+                          echo '<a href="filtertags.php?tid='.$row3['id'].'">'.$row3['name'].'</a>';
+                
+                        
+                    
+                    }
+                    echo '</div>';
+            
+                }
+               
+                else {
+                      echo "0 results";
+                }
+
+
+                ?>
             </div>
             <!-- single sidebar -->
             <div class="aa-sidebar-widget">
@@ -679,30 +704,36 @@ if (isset($_GET['cid'])) {
             <div class="aa-sidebar-widget">
               <h3>Top Rated Products</h3>
               <div class="aa-recently-views">
-                <ul>
-                  <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>
-                  <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>
-                   <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>                                      
+                <?php
+
+                      $sql8 = "SELECT * FROM products WHERE price BETWEEN 12000 AND 80000";
+                      $result8 = $conn->query($sql8);
+
+                      if ($result8->num_rows > 0) {
+                        // output data of each row
+                        echo '<ul>';
+                        while($row8 = $result8->fetch_assoc()) {
+                          echo "<li>";
+                          echo '<a href="#" class="aa-cartbox-img"><img alt="img" src="admin/images/'.$row8['image'].'"></a>';
+                          echo '<div class="aa-cartbox-info">
+                          ';
+                          echo '<h4><a href="#">'.$row8['name'].'</a></h4>';
+                          echo ' <p>&#8377;'.$row8['price'].'</p>
+                          ';
+                          echo '</div>';
+                          echo '</li>';
+                        
+
+                        }
+                      } else {
+                        echo "0 results";
+                      }
+
+                ?>
+
                 </ul>
               </div>                            
+                                      
             </div>
           </aside>
         </div>

@@ -1,6 +1,7 @@
 <?php 
 require 'admin/connection.php';
-$empty=array();
+session_start();
+$_SESSION["empty"]=array();
 
 $limit=10;
 if (isset($_GET['pageid'])) {
@@ -25,13 +26,14 @@ if ($result11->num_rows > 0) {
         foreach ($arr as $a) {
             if ($a==$tid) {
                 $pid=$row11["product_id"];
-                array_push($empty, $pid);
+                array_push($_SESSION["empty"], $pid);
                 //print_r($empty);
                 //echo count($empty);
             }
 
         }
     }
+    //print_r($_SESSION['empty']);
 } else {
     echo "0 results";
 }
@@ -177,43 +179,53 @@ if ($result11->num_rows > 0) {
               </div>
               <!-- / logo  -->
                <!-- cart box -->
-              <div class="aa-cartbox">
+               <div class="aa-cartbox">
                 <a class="aa-cart-link" href="#">
                   <span class="fa fa-shopping-basket"></span>
                   <span class="aa-cart-title">SHOPPING CART</span>
-                  <span class="aa-cart-notify">2</span>
+                  <span class="aa-cart-notify"><?php echo count($_SESSION["cart1"])  ?></span>
                 </a>
                 <div class="aa-cartbox-summary">
-                  <ul>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-2.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-1.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>                    
+                  
+                  <?php
+                    $html="";
+                    $sum=0;
+                    $html='<ul>';
+                    foreach($_SESSION['cart1'] as $value) {
+                      $html.='<li>';
+                      $html.='<a class="aa-cartbox-img" href="#"><img src="admin/images/'.$value["image"].'" alt="img"></a>';
+                      $html.='<div class="aa-cartbox-info">';
+
+                      $html.='<h4><a href="#">'.$value['name'].'</a></h4>';
+                      $html.='<p>'.$value['quantity']*$value['price'].'</p>';
+                      $html.='</div>';
+                      $html.=' <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
+                      ';
+                      $a=$value["price"]*$value["quantity"];
+            
+                      $sum+=$a;
+
+                      $html.='</li>';
+                      
+                      
+                      
+                    } 
+                    echo $html;
+
+                    ?>
                     <li>
                       <span class="aa-cartbox-total-title">
                         Total
                       </span>
                       <span class="aa-cartbox-total-price">
-                        $500
+                        <?php echo $sum ?>
                       </span>
                     </li>
                   </ul>
                   <a class="aa-cartbox-checkout aa-primary-btn" href="#">Checkout</a>
                 </div>
               </div>
-              <!-- / cart box -->
+               <!-- / cart box -->
               <!-- search box -->
               <div class="aa-search-box">
                 <form action="">
@@ -416,38 +428,47 @@ if ($result11->num_rows > 0) {
                 <!-- start single product item -->
                     <?php
                         
-                      $sql = "SELECT * FROM products WHERE product_id=".$pid." LIMIT {$offset},{$limit}";
-                      $result = $conn->query($sql);
+                        $sql = "SELECT * FROM products";
+                        $result = $conn->query($sql);
                       
                     if ($result->num_rows > 0) {
-                        // output data of each row
+                        
                         while ($row = $result->fetch_assoc()) {
-                         
-                            echo "<li>";
-                            echo "<figure>";
-                            echo '<a class="aa-product-img" href="#"><img src="admin/images/'.$row['image'].'" alt="polo shirt img" style="width: 250px;height: 300px;"></a>';
-                            echo '<a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>';
-                            echo '<figcaption>';
-                            echo '<h4 class="aa-product-title"><a href="#">'.$row['name'].'</a></h4>';
-                            echo '<span class="aa-product-price">&#8377;'.$row['price'].'</span><span class="aa-product-price"><del>$65.50</del></span>';
-                            echo '<p class="aa-product-descrip">"'.$row["long_description"].'"</p>';
-                            echo '</figcaption>';
-                            echo '</figure>';                         
-                            echo '<div class="aa-product-hvr-content">';
-                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>';
-                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>';
-                            echo '<a href="#" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal" data-target="#quick-view-modal"><span class="fa fa-search"></span></a>';                            
-                            echo '</div>';
-                            echo '<span class="aa-badge aa-sale" href="#">SALE!</span>';
-                            echo '</li>';
-                     
-                        
-                        
-                        
+
+                            foreach ($_SESSION['empty'] as $p) {
+                                if ($row['product_id']==$p) {
+
+                                    echo '<li>';
+                                            echo '<figure>';
+                                            echo '<a class="aa-product-img" href="#"><img src="admin/images/'.$row['image'].'" alt="polo shirt img" style="width: 250px;height: 300px;"></a>';
+                                            echo '<a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>';
+                                            echo '<figcaption>';
+                                            echo '<h4 class="aa-product-title"><a href="#">'.$row['name'].'</a></h4>';
+                                            echo '<span class="aa-product-price">&#8377;'.$row['price'].'</span><span class="aa-product-price"><del>$65.50</del></span>';
+                                            echo '<p class="aa-product-descrip">"'.$row["long_description"].'"</p>';
+                                            echo '</figcaption>';
+                                            echo '</figure>';                         
+                                            echo '<div class="aa-product-hvr-content">';
+                                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>';
+                                            echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>';
+                                            echo '<a href="#" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal" data-target="#quick-view-modal"><span class="fa fa-search"></span></a>';                            
+                                            echo '</div>';
+                                            echo '<span class="aa-badge aa-sale" href="#">SALE!</span>';
+                                            echo '</li>';
+                                    
+                                        
+                                        
+                                        
+                                }
+                            } 
                         }
                     } else {
-                        echo "0 results";
+                                echo "0 results";
                     }
+
+                           
+                         
+                            
                     ?>
                     
                  </ul>
@@ -719,30 +740,36 @@ if ($result11->num_rows > 0) {
             <div class="aa-sidebar-widget">
               <h3>Top Rated Products</h3>
               <div class="aa-recently-views">
-                <ul>
-                  <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>
-                  <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>
-                   <li>
-                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                    <div class="aa-cartbox-info">
-                      <h4><a href="#">Product Name</a></h4>
-                      <p>1 x $250</p>
-                    </div>                    
-                  </li>                                      
+                <?php
+
+                      $sql8 = "SELECT * FROM products WHERE price BETWEEN 12000 AND 80000";
+                      $result8 = $conn->query($sql8);
+
+                      if ($result8->num_rows > 0) {
+                        // output data of each row
+                        echo '<ul>';
+                        while($row8 = $result8->fetch_assoc()) {
+                          echo "<li>";
+                          echo '<a href="#" class="aa-cartbox-img"><img alt="img" src="admin/images/'.$row8['image'].'"></a>';
+                          echo '<div class="aa-cartbox-info">
+                          ';
+                          echo '<h4><a href="#">'.$row8['name'].'</a></h4>';
+                          echo ' <p>&#8377;'.$row8['price'].'</p>
+                          ';
+                          echo '</div>';
+                          echo '</li>';
+                        
+
+                        }
+                      } else {
+                        echo "0 results";
+                      }
+
+                ?>
+
                 </ul>
               </div>                            
+                                     
             </div>
           </aside>
         </div>

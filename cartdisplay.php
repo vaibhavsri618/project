@@ -1,3 +1,73 @@
+<?php
+
+session_start();
+
+
+
+
+
+// //print_r($_SESSION['cart1']);
+// $html="";
+// //$html.="<form method='post' action='#'>";
+// $html.="<table border=2px solid black>";
+// $html.="<tr><th>Product Image</th><th>Product Name</th><th>Product Price</th><th>Quantity</th><th>Action</th><th>Action</th><th>Total Price</tr>";
+// $sum=0;
+// foreach ($_SESSION['cart1'] as $key=>$value) {
+//     $html.="<tr><td><img src=../images/".$value["img"]." 
+//     style='width:75px;height:75px'></td>";
+//     $html.="<td>".$value["name"]."</td>";
+//     $html.="<td>".$value["cost"]."</td>";
+//     $html.="<form action='phpsqlcartdisplay.php?update=".$key."'
+//      method='POST' enctype='multipart/form-data' name='form'><td>
+//     <input type='number' name='qty' id='qty' value='".$value["quantity"]."' 
+//     style='width:40px'></td>";
+//     $html.="<td><a href='phpsqlcartdisplay.php?id1=$key'>Delete</a></td>";
+//     $html.="<td><input type='submit' id='submit' name='submit' value='Update'</td>";
+    
+//     $html.="<td>".$value["cost"]*$value["quantity"]."</td></tr></form>";
+//     $a=$value["cost"]*$value["quantity"];
+    
+//     //var_dump($a);
+//     $sum+=$a;
+    
+
+// }
+
+// $html.="<tr><th>Total Cart Price</th><td colspan='4'>".$sum."</td>";
+    
+
+// $html.="</table>";
+// echo $html;
+
+
+
+// //$update=$_GET['update'];
+
+// if (isset($_POST['submit'])) {
+//     foreach ($_SESSION['cart1'] as $key01=>$value01) {
+//         if ($key01==$_GET['update']) {
+//             $_SESSION['cart1'][$key01]['quantity']=$_POST['qty'];
+//             header("Location:productsql.php");
+//         }
+//     }
+
+// }
+
+
+// //$id1=$_GET['id1'];
+// if (isset($_GET['id1'])) {
+//         unset($_SESSION['cart1'][$_GET['id1']]);
+//         header("Location:productsql.php");
+        
+// }
+
+
+// ?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -345,54 +415,46 @@
            <div class="cart-view-table">
              <form action="">
                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th></th>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><a class="remove" href="#"><fa class="fa fa-close"></fa></a></td>
-                        <td><a href="#"><img src="img/man/polo-shirt-1.png" alt="img"></a></td>
-                        <td><a class="aa-cart-title" href="#">Polo T-Shirt</a></td>
-                        <td>$250</td>
-                        <td><input class="aa-cart-quantity" type="number" value="1"></td>
-                        <td>$250</td>
-                      </tr>
-                      <tr>
-                        <td><a class="remove" href="#"><fa class="fa fa-close"></fa></a></td>
-                        <td><a href="#"><img src="img/man/polo-shirt-2.png" alt="img"></a></td>
-                        <td><a class="aa-cart-title" href="#">Polo T-Shirt</a></td>
-                        <td>$150</td>
-                        <td><input class="aa-cart-quantity" type="number" value="1"></td>
-                        <td>$150</td>
-                      </tr>
-                      <tr>
-                        <td><a class="remove" href="#"><fa class="fa fa-close"></fa></a></td>
-                        <td><a href="#"><img src="img/man/polo-shirt-3.png" alt="img"></a></td>
-                        <td><a class="aa-cart-title" href="#">Polo T-Shirt</a></td>
-                        <td>$50</td>
-                        <td><input class="aa-cart-quantity" type="number" value="1"></td>
-                        <td>$50</td>
-                      </tr>
+               <?php
+               $html="";
+        $html.=" <table class='table'>";
+        $html.=" <thead><tr><th></th><th></th>";
+        $html.="<th>Product</th><th>Price</th><th>Quantity</th><th>Total</th></tr></thead><tbody>";
+        $sum=0;
+        foreach ($_SESSION['cart1'] as $key=>$value) {
+            $html.='<td><a class="remove" href="cartdisplay.php?id1='.$key.'"><fa class="fa fa-close"></fa></a></td>';
+            $html.='<td><a href="#"><img src="admin/images/'.$value["image"].'" alt="img"></a></td>';
+            $html.='<td><a class="aa-cart-title" href="#">'.$value["name"].'</a></td>';
+            $html.="<td>".$value["price"]."</td>";
+            $html.="<form action='cartdisplay.php?update=".$key."'
+             method='POST' enctype='multipart/form-data' name='form'><td>
+            <input class='aa-cart-quantity' type='number' name='qty' id='qty' value='".$value["quantity"]."' 
+            style='width:40px'></td>";
+           // $html.="<td><input type='submit' id='submit' name='submit' value='Update'</td>";
+            
+            $html.="<td>".$value["price"]*$value["quantity"]."</td></tr>";
+            $a=$value["price"]*$value["quantity"];
+            
+            //var_dump($a);
+            $sum+=$a;
+        }
+        
+
+               ?>
+
+                <?php echo $html ?>
                       <tr>
                         <td colspan="6" class="aa-cart-view-bottom">
                           <div class="aa-cart-coupon">
                             <input class="aa-coupon-code" type="text" placeholder="Coupon">
                             <input class="aa-cart-view-btn" type="submit" value="Apply Coupon">
                           </div>
-                          <input class="aa-cart-view-btn" type="submit" value="Update Cart">
+                          <input class="aa-cart-view-btn" type="submit" value="Update Cart" name="submit"></form>
                         </td>
                       </tr>
                       </tbody>
                   </table>
-                </div>
+                  </div>
              </form>
              <!-- Cart Total view -->
              <div class="cart-view-total">
@@ -401,15 +463,15 @@
                  <tbody>
                    <tr>
                      <th>Subtotal</th>
-                     <td>$450</td>
+                     <td><?php echo $sum?></td>
                    </tr>
                    <tr>
                      <th>Total</th>
-                     <td>$450</td>
+                     <td><?php echo $sum?></td>
                    </tr>
                  </tbody>
                </table>
-               <a href="#" class="aa-cart-view-btn">Proced to Checkout</a>
+              <?php echo '<a href="checkout.php?amount='.$sum.'" class="aa-cart-view-btn">Proced to Checkout</a>'; ?>
              </div>
            </div>
          </div>
@@ -417,6 +479,30 @@
      </div>
    </div>
  </section>
+
+
+ <?php
+
+    if (isset($_POST['submit'])) {
+        foreach ($_SESSION['cart1'] as $key01=>$value01) {
+            if ($key01==$_GET['update']) {
+                $_SESSION['cart1'][$key01]['quantity']=$_POST['qty'];
+                header("Location:cartdisplay.php");
+            }
+        }
+      
+    }
+          
+  
+    if (isset($_GET['id1'])) {
+         unset($_SESSION['cart1'][$_GET['id1']]);
+          header("Location:cartdisplay.php");
+          
+    }
+
+
+
+    ?>
  <!-- / Cart view section -->
 
 
