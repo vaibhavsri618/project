@@ -7,7 +7,15 @@ require 'header.php'?>
 require 'asider.php'
 ?>
 
-
+<?php
+$limit=10;
+if (isset($_GET['pageid'])) {
+    $page=$_GET['pageid'];  
+} else {
+    $page=1;
+}
+$offset=($page-1)*$limit;
+?>
 
 
 
@@ -152,17 +160,17 @@ VALUES ('".$pid."', '".$jsonarr."')";
       <div class="content-box-header">
          <h3>Content box</h3>
          <ul class="content-box-tabs">
-            <li><a href="#tab1" >
+            <li><a href="#tab1" class="default-tab">
                Manage</a>
             </li>
             <!-- href must be unique and match the id of target div -->
-            <li><a href="#tab2" class="default-tab">Add</a></li>
+            <li><a href="#tab2">Add</a></li>
          </ul>
          <div class="clear"></div>
       </div>
       <!-- End .content-box-header -->
       <div class="content-box-content">
-      <div class="tab-content default-tab" id="tab2">
+      <div class="tab-content" id="tab2">
             <form action="#" method="post" enctype="multipart/form-data">
                <fieldset>
                   <!-- Set class to "column-left" or "column-right"
@@ -232,7 +240,6 @@ VALUES ('".$pid."', '".$jsonarr."')";
                         } else {
                             echo "0 results";
                         }
-                        $conn->close();
                         ?>
                     
                   
@@ -260,7 +267,7 @@ VALUES ('".$pid."', '".$jsonarr."')";
          </div>
          <!-- End #tab2 -->        
       
-         <div class="tab-content" id="tab1">
+         <div class="tab-content default-tab" id="tab1">
             <!-- This is the target div. id must match the href of this div's tab -->
             <div class="notification attention png_bg">
                <a href="#" class="close">
@@ -276,11 +283,15 @@ VALUES ('".$pid."', '".$jsonarr."')";
                <thead>
                   <tr>
                      <th><input class="check-all" type="checkbox" /></th>
-                     <th>Column 1</th>
-                     <th>Column 2</th>
-                     <th>Column 3</th>
-                     <th>Column 4</th>
-                     <th>Column 5</th>
+                     <th>Product id</th>
+                     
+                     <th>Name</th>
+                     <th>Price</th>
+                     <th>Image</th>
+                     <th>Short_description</th>
+                     <th>Long_description</th>
+                     <th>Category Id</th>
+                     
                   </tr>
                </thead>
                <tfoot>
@@ -295,153 +306,79 @@ VALUES ('".$pid."', '".$jsonarr."')";
                            <a class="button" href="#">Apply to selected</a>
                         </div>
                         <div class="pagination">
-                           <a href="#" title="First Page">&laquo; 
-First</a><a href="#" title="Previous Page">&laquo; Previous</a>
-                           <a href="#" class="number" title="1">1</a>
-                           <a href="#" class="number" title="2">2</a>
-                           <a href="#" class="number current" title="3">3</a>
-                           <a href="#" class="number" title="4">4</a>
-                           <a href="#" title="Next Page">
-Next &raquo;</a><a href="#" title="Last Page">Last &raquo;</a>
-                        </div>
+                           <?php
+                            if ($page>1) {
+                                echo '<a href="addproduct.php?pageid='.($page-1).'" title="Previous Page">&laquo; Previous</a>';
+                            }
+                            ?>
+                           <?php  
+                            require 'connection.php';
+                            $sql44 = "SELECT * FROM products";
+                            $result44 = $conn->query($sql44);
+
+                            if ($result44->num_rows > 0) {
+                                $length=$result44->num_rows;
+                                $pages=ceil($length/$limit);
+                                for ($i=1;$i<=$pages;$i++) {
+                                   
+                                    if ($i==$page) {
+                                        $active="active";
+                                    } else {
+                                        $active="";
+
+                                    }
+                                    echo '<a href="addproduct.php?pageid='.$i.'" class="number" title="1">'.$i.'</a>';
+
+                                }
+                           
+                           
+                            } else {
+                                echo "0 results";
+                            }
+                            if ($pages > $page) {
+                                echo ' <a href="addproduct.php?pageid='.($page+1).'" title="Next Page">Next &raquo;</a>  ';
+                            } 
+                            ?>     </div>
                         <!-- End .pagination -->
                         <div class="clear"></div>
                      </td>
                   </tr>
                </tfoot>
                <tbody>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png"
-                        alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png"
-                         alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" 
-                        alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-<img src="resources/images/icons/pencil.png" 
-alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td><input type="checkbox" /></td>
-                     <td>Lorem ipsum dolor</td>
-                     <td><a href="#" title="title">Sit amet</a></td>
-                     <td>Consectetur adipiscing</td>
-                     <td>Donec tortor diam</td>
-                     <td>
-                        <!-- Icons -->
-                        <a href="#" title="Edit">
-                        <img src="resources/images/icons/pencil.png" alt="Edit" /></a>
-                        <a href="#" title="Delete">
-                        <img src="resources/images/icons/cross.png" alt="Delete" /></a> 
-                        <a href="#" title="Edit Meta">
-                        <img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>
-                     </td>
-                  </tr>
+                     <?php 
+                           $sql32 = "SELECT * FROM products LIMIT {$offset},{$limit}";
+                        $result32 = $conn->query($sql32);
+                        
+                        if ($result32->num_rows > 0) {
+                            while ($row32 = $result32->fetch_assoc()) {
+                              echo '<tr>';
+                              echo '<td><input type="checkbox" /></td>';
+                          
+                                 echo'<td>'.$row32['product_id'].'</td>';
+                                 echo '<td>'.$row32['name'].'</td>';
+                                 echo '<td>'.$row32['price'].'</td>';
+                                 echo '<td><img src="images/'.$row32['image'].'" style="width:30px;height:30px"></td>';
+                                 echo '<td>'.$row32['short_description'].'</td>';
+                                 echo '<td>'.$row32['long_description'].'</td>';
+                                 echo '<td>'.$row32['category_id'].'</td>';
+                                 echo '<td>';
+                                 echo '<a href="updateproduct.php?upid='.$row32['product_id'].'" title="Edit">';
+                                 echo '<img src="resources/images/icons/pencil.png" alt="Edit" /></a>';
+                                 echo '<a href="deleteproduct.php?delid='.$row32['product_id'].'" title="Delete">';
+                                 echo '<img src="resources/images/icons/cross.png"
+                                  alt="Delete" /></a>'; 
+                                 echo '</td>';
+                                 echo '</tr>';
+                                    
+                                
+                                 
+
+                            }
+                        } else {
+                        echo "0 results";
+                        }
+                                    ?>
+                     
                </tbody>
             </table>
          </div>

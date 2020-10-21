@@ -21,6 +21,26 @@ session_start();
 
 ?>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+                $(document).ready(function() {
+                  $(".quickview").click(function() {
+                   
+                    var pid=$(this).data("productid");
+                    console.log(pid)
+                  
+                    $.ajax({
+                        url: 'pro1.php',
+                        type: 'POST',
+                        data: {proid:pid},
+                        success: function(data) {
+                          //Optional callback function on success
+                        }
+                      }); });
+                });
+              </script>
+             
 
 <!DOCTYPE html>
 <html lang="en">
@@ -427,7 +447,7 @@ session_start();
                             echo '<div class="aa-product-hvr-content">';
                             echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>';
                             echo '<a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>';
-                            echo '<a href="pro.php?mid='.$row["product_id"].'" class="quickview" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal"><span class="fa fa-search"></span></a>';                            
+                            echo '<a href="#" class="quickview" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal" data-target="#quick-view-modal" data-productid='.$row["product_id"].'><span class="fa fa-search"></span></a></a>';                            
                             echo '</div>';
                             echo '<span class="aa-badge aa-sale" href="#">SALE!</span>';
                             echo '</li>';
@@ -939,8 +959,6 @@ session_start();
   <script type="text/javascript" src="js/nouislider.js"></script>
   <!-- Custom js -->
   <script src="js/custom.js"></script> 
-
-  
   
 
   </body>
