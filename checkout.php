@@ -4,8 +4,7 @@ require 'admin/connection.php';
 session_start();
 $json=json_encode($_SESSION['cart1']);
 
-$mydate=getdate(date("U"));
-$date="$mydate[weekday], $mydate[month] $mydate[mday], $mydate[year]";
+$date=date("Y/m/d");
 if (isset($_GET['amount'])) {
   $amount=$_GET['amount'];
   $sql24 = "INSERT INTO orders (cartdata, total, status,datetime)
