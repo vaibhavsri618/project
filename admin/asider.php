@@ -45,9 +45,8 @@
             Users
             </a>
             <ul>
-               <li><a <?php if ($filename=='adduser.php') : ?>class="current"<?php endif;?> href="adduser.php">Add Users</a></li>
-               <li><a <?php if ($filename=='manageuser.php') : ?>class="current"<?php endif;?> href="manageuser.php">Manage Userss</a></li>
-            </ul>
+               <li><a <?php if ($filename=='adduser.php') : ?>class="current"<?php endif;?> href="adduser.php">Manage Users</a></li>
+              </ul>
          </li>
          <li>
             <a href="#" class="nav-top-item <?php if (in_array($filename, $ordermenu)) : ?>current<?php endif; ?>">

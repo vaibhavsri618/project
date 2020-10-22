@@ -120,9 +120,13 @@ $offset=($page-1)*$limit;
           <?php 
                 $sql32 = "SELECT * FROM orders LIMIT {$offset},{$limit}";
              $result32 = $conn->query($sql32);
+             $cart=array();
              
              if ($result32->num_rows > 0) {
                  while ($row32 = $result32->fetch_assoc()) {
+                   // $cartarr=json_decode($row32['cartdata']);
+                   
+
                     echo '<tr>';
                    echo '<td><input type="checkbox" /></td>';
                
@@ -132,9 +136,9 @@ $offset=($page-1)*$limit;
                       echo '<td>'.$row32['status'].'</td>';
                       echo '<td>'.$row32['datetime'].'</td>';
                       echo '<td>';
-                      echo '<a href="#updateproduct.php?upid='.$row32['id'].'" title="Edit">';
+                      echo '<a href="updateorder.php?upid='.$row32['id'].'" title="Edit">';
                       echo '<img src="resources/images/icons/pencil.png" alt="Edit" /></a>';
-                      echo '<a href="#" title="Delete">';
+                      echo '<a href="deleteorder.php?delid='.$row32['id'].'" title="Delete">';
                       echo '<img src="resources/images/icons/cross.png"
                        alt="Delete" /></a>'; 
                       echo '</td>';
